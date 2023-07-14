@@ -14,5 +14,6 @@
 }
 body{
   font-family: 'Roboto', sans-serif;
+  user-select: none;
 }
 </style>

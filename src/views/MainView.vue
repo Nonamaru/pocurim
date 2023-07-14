@@ -2,18 +2,41 @@
 <div class="web">
   <div class="container">
     <div class="header">
-      {{ role }}
+      <!-- {{ role }}
       {{ whois }}
-      {{ isReady }}
+      {{ storagePicture }} -->
+      <text v-if="!pokurOrganizovan">
+        Покур никто не организовал, 
+        <text class="create-pokur" @click="pokurOrganizovan = !pokurOrganizovan;" >
+          <b>организовать покур?</b>
+        </text>
+      </text>
+      <text v-if="pokurOrganizovan">Организатор покура: <b>{{ role }}</b></text>
+      <div class="leave" @click="leave()">СЛИТЬСЯ</div>
     </div>
     <div class="hub">
       <div class="isReady">
         <!-- <WarriorSuki @ready="(i) => isReady = i" :name="whois" :role="role" /> -->
-        <WarriorSuki :name="whois" :role="role" :isYou=true />
-        <WarriorSuki name="Anton" role="Танчащий палладин" :isYou=false />
-        <WarriorSuki name="Danil" role="Длинный убийца" :isYou=false />
-        <WarriorSuki name="Ruslan" role="Таинственный маг" :isYou=false />
-        <WarriorSuki name="Sanya" role="Агро воин" :isYou=false />
+        <WarriorSuki 
+          :name="whois" :role="role" pic="felix" 
+          :isYou="true"
+          :pokur="pokurOrganizovan" 
+        />
+        <WarriorSuki 
+          v-for="char in whoiswho" :key="char" 
+          :name="char.name" :role="char.title" :pic="char.picture"
+          :isYou="false" 
+          :pokur="pokurOrganizovan" 
+        />
+      </div>
+      <div class="chatik">
+        <div class="chatik-napisat">
+          <input type="text" v-model="pisat" @keydown.enter="Sending()" />
+          <button @click="Sending()">send</button>
+        </div>
+        <div class="chatik-results">
+          {{ message }}
+        </div>
       </div>
     </div>
   </div>
@@ -29,7 +52,10 @@ export default{
     return{
       whois: '',
       role: '',
-      isReady: '',
+      storagePicture: '',
+      pokurOrganizovan: false,
+      pisat: '',
+      message: '',
       characters:[
         {
           id: 'a38f9dd3-263f-4f64-9314-b6e171fe5b75',
@@ -61,12 +87,30 @@ export default{
           title: 'Агро воин',
           picture: 'sanya',
         },
-      ]
+      ],
+      whoiswho:[]
+    }
+  },
+  methods:{
+    leave(){
+      localStorage.clear();
+      this.$router.push({name: 'auth'});
+    },
+    Sending(){
+      this.message = this.pisat;
     }
   },
   mounted(){
     this.whois = localStorage.getItem('whois');
     this.role = localStorage.getItem('role');
+    // this.storagePicture = localStorage.getItem('picture');
+    for(let i = 0; i < this.characters.length; i++){
+      if (this.characters[i].name != this.whois){
+        this.whoiswho.push(this.characters[i]);
+      } else {
+        this.storagePicture = this.characters[i].picture;
+      }
+    }
   }
 }
 </script>
@@ -79,20 +123,52 @@ export default{
   margin-left: auto;
   margin-right: auto;
 }
+
+
+/*HEADER*/
 .header{
   width: 100%;
-  border: 1px solid black;
-  text-align: center;
-}
-.hub{
-  width: 100%;
-  border: 1px solid black;
-}
-.isReady{
-  width: 100%;
-  border: 1px solid black;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
+  padding-top: 1vw;
+  padding-bottom: 1vw;
+}
+.leave{
+  border: 1px solid gray;
+  border-radius: .4rem;
+  padding: .2vw;
+  background-color: lightgray;
+}
+.leave:hover{
+  color: darkred;
+  border: 1px solid darkred;
+  background-color: gray;
+  cursor: pointer;
+}
+.create-pokur:hover{
+  color: gray;
+  cursor: pointer;
+}
+
+
+/*HUB*/
+.hub{
+  width: 100%;
+}
+.isReady{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+
+/*CHATIK*/
+.chatik{
+  width: 100%;
+  border: 1px solid black;
+  margin-top: 1vw;
 }
 </style>
