@@ -6,20 +6,24 @@
         <!-- <text>{{ name }}</text> -->
         <text v-bind:class="{roleNotReady: pokur && !isready, roleReady: pokur && isReady}">{{ role }}</text>
       </div>
+      <div class="ready-button" v-if="isYou && !isReady && pokur" @click="$emit('ready', true)" :disabled="!pokur">
+        <text id="ready">READY?</text>
+      </div>
+      <div class="ready-button" v-if="isYou && isReady" @click="$emit('ready', false)">
+        <text id="zassal">ZASSAL?</text>
+      </div>
     </div>
     <div>
       <!-- <text @click="$emit('ready', true)">READY?</text> -->
-      <button v-if="isYou && !isReady" @click="isReady = true" :disabled="!pokur">READY?</button>
-      <button v-if="isYou && isReady" @click="isReady = false">ZASSAL?</button>
     </div>
   </div>
 </template>
 <script>
 export default{
-  props: ['name', 'role', 'isYou', 'pokur', 'pic'],
+  props: ['name', 'role', 'isYou', 'pokur', 'pic', 'isReady'],
   data(){
     return{
-      isReady: false,
+      // isReady: false,
     }
   }
 }
@@ -51,7 +55,7 @@ export default{
 
 .char{
   width: 100%;
-  height: 90%;
+  height: 100%;
   position: relative;
 }
 .char img{
@@ -75,9 +79,18 @@ export default{
   width: 100%;
   font-size: 1.5vw;
 }
-button{
-  width: 100%;
-  margin-top: .6vw;
+.ready-button{
+  position: absolute;
+  width: 30%;
+  backdrop-filter: blur(100px);
+  border-radius: .2rem;
+  text-align: center;
+  border: none;
+  top: .4vw;
+  right: .4vw;
   padding: .2vw;
+  z-index: 5;
 }
+#ready{color: green; cursor: pointer;}
+#zassal{color: red; cursor: pointer;}
 </style>
