@@ -44,6 +44,19 @@
         />
       </div>
       <div class="bottom">
+        <div class="users">
+          <div v-for="warrior in whoiswho" :key="warrior" class="user">
+            <div class="user-pic">
+              <img :src="require(`@/assets/${warrior.picture}.jpg`)" />
+            </div>
+            <div class="user-name">
+              {{ warrior.name }}
+            </div>
+            <div class="user-invite">
+              <Icon icon="mdi:invite" />
+            </div>
+          </div>
+        </div>
         <div class="chat">
           <Chat :whois="whois" />
         </div>
@@ -56,12 +69,14 @@
 </div>
 </template>
 <script>
+import { Icon } from '@iconify/vue';
 import WarriorSuki from '../components/WarriorSuki.vue';
 import Chat from '../components/ChatPokur.vue';
 export default{
   components:{
     WarriorSuki,
     Chat,
+    Icon,
   },
   data(){
     return{
@@ -230,18 +245,55 @@ export default{
   width: 90vw;
   margin-left: auto;
   margin-right: auto;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   margin-top: 1vw;
 }
-.chat{
+.users{
+  width: 10%;
+}
+.user{
+  width: 100%;
   border: 1px solid black;
-  width: 30%;
+  border-radius: 6px;
+  margin-bottom: .2vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-right: .3vw;
+}
+.user-name{
+  width: 75%;
+  text-align: left;
+  font-size: .8vw;
+  display: flex;
+  align-items: center;
+}
+.user-pic{
+  width: 10%;
+}
+.user-pic img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.user-invite{
+  width: 10%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1vw;
+}
+.user-invite:hover{
+  color: gray;
+}
+.chat{
+  width: 70%;
 }
 .menu{
   border: 1px solid black;
-  width: 30%;
+  width: 10%;
 }
 </style>
