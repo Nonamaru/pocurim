@@ -28,7 +28,7 @@ const routes = [
     name: 'main',
     component: () => import('../views/MainView.vue'),
     beforeEnter: zareganLi,
-  }
+  },
 ]
 
 const router = createRouter({
