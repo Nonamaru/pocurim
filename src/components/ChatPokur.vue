@@ -38,11 +38,12 @@ export default{
                 await socket.on("chat", function(data) {
                   // console.log(data);
                   console.log(data.text);
-                  this.messages.push(data.text);
+                  
                 });
                 socket.emit("chat" , {userId : `a38f9dd3-263f-4f64-9314-b6e171fe5b75`, text: `${this.pisat}`})
                 await socket.on("chat", (data) => {
                   this.uID = data.userId;
+                  this.messages.push(data.text);
                 });
                 this.pisat = '';
             }
