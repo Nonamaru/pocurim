@@ -245,24 +245,21 @@ export default{
   width: 90vw;
   margin-left: auto;
   margin-right: auto;
-  /* border: 1px solid black; */
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   margin-top: 1vw;
 }
 .users{
-  width: 10%;
+  width: 20%;
 }
 .user{
   width: 100%;
-  border: 1px solid black;
   border-radius: 6px;
   margin-bottom: .2vw;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding-right: .3vw;
 }
 .user-name{
   width: 75%;
@@ -290,10 +287,12 @@ export default{
   color: gray;
 }
 .chat{
-  width: 70%;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
 }
 .menu{
-  border: 1px solid black;
-  width: 10%;
+  /* border: 1px solid black; */
+  width: 20%;
 }
 </style>
