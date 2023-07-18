@@ -8,7 +8,7 @@
     </div>
   </div>
   <div class="chatik-napisat">
-    <div class="name">{{ whois }} id: {{ uID }}</div>
+    <div class="name">{{ whois }}</div>
     <input type="text" v-model="pisat" @keydown.enter="Sending()" />
     <div class="send-icon"><Icon @click="Sending()" icon="bxs:send" /></div>
   </div>
@@ -104,7 +104,7 @@ export default{
   border: none;
   background-color: lightgray;
   padding: .5% 1%;
-  width: 80%;
+  width: 85%;
   font-size: 1vw;
   border-radius: 6px 6px 0px 0px;
 }

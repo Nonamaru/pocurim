@@ -188,6 +188,7 @@ export default{
 }
 .users{
   width: 20%;
+  border: 1px solid black;
 }
 .user{
   width: 100%;
@@ -223,10 +224,11 @@ export default{
   color: gray;
 }
 .chat{
-  width: 70%;
-}
-.menu{
+  width: 55%;
   border: 1px solid black;
-  width: 10%;
+}
+.bottom-menu{
+  border: 1px solid black;
+  width: 20%;
 }
 </style>

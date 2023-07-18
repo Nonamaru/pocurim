@@ -1,17 +1,12 @@
 <template>
 <div class="character">
     <img :src="require(`../assets/${pic}.jpg`)">
-    <div class="text">{{ desc }}</div>
+    <div class="text" v-html="desc"></div>
 </div>
 </template>
 <script>
 export default{
     props: ['pic', 'desc'],
-    data(){
-        return{
-            name: 'antoxa' 
-        }
-    }
 }
 </script>
 <style scoped>
@@ -26,6 +21,7 @@ export default{
 }
 .character:hover{
     border: 2px solid darkgray;
+    cursor: pointer;
 }
 img{
     width: 100%;
@@ -39,6 +35,7 @@ img{
     text-align: center;
     width: 100%;
     color: white;
-    background-color: gray;
+    backdrop-filter: blur(10px);
+    border-radius: 0px 0px 6px 6px;
 }
 </style>
