@@ -8,7 +8,7 @@
     </div>
   </div>
   <div class="chatik-napisat">
-    <div class="name">{{ whois }}</div>
+    <div class="name">{{ whois }} id: {{ uID }}</div>
     <input type="text" v-model="pisat" @keydown.enter="Sending()" />
     <div class="send-icon"><Icon @click="Sending()" icon="bxs:send" /></div>
   </div>
@@ -16,8 +16,9 @@
 </template>
 <script>
 import { Icon } from '@iconify/vue';
+import { socket } from '@/socket'
 export default{
-    props:['whois'],
+    props:['whois', 'uId'],
     components:{
         Icon,
     },
@@ -25,18 +26,35 @@ export default{
         return{
             pisat: '',
             message: '',
+            // uID: uId,
             messages: []
         }
     },
     methods:{
-        Sending(){
+        async Sending(){
             if (this.pisat != ''){
-                this.message = this.pisat;
-                this.messages.push(this.message);
+                // this.message = this.pisat;
+                // this.messages.push(this.message);
+                await socket.on("chat", function(data) {
+                  // console.log(data);
+                  console.log(data.text);
+                  this.messages.push(data.text);
+                });
+                socket.emit("chat" , {userId : `a38f9dd3-263f-4f64-9314-b6e171fe5b75`, text: `${this.pisat}`})
+                await socket.on("chat", (data) => {
+                  this.uID = data.userId;
+                });
                 this.pisat = '';
             }
         }
-    }
+    },
+    // async mounted(){
+    //   await socket.on("chat", function(data) {
+    //     // console.log(data);
+    //     console.log(data.text);
+    //     this.messages.push(data.text);
+    //   });
+    // }
 }
 </script>
 <style scoped>

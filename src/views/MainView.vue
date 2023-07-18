@@ -1,32 +1,6 @@
 <template>
 <div class="web">
   <div class="container">
-    <div class="leave-popup" v-if="ochkun">
-      <text>Очканул?</text>
-      <div class="vibor">
-        <div @click="leave()">Да, я очкун</div>
-        <div @click="ochkun = false">Случайно нажал</div>
-      </div>
-    </div>
-    <div class="header">
-      <!-- {{ role }}
-      {{ whois }}
-      {{ storagePicture }} -->
-      <text v-if="!pokurOrganizovan">
-        Покур никто не организовал, 
-        <text class="create-pokur" @click="pokurOrganizovan = !pokurOrganizovan; organizator = role; ready = true" >
-          <b>организовать покур?</b>
-        </text>
-      </text>
-      <text v-if="pokurOrganizovan">Организатор покура: <b>{{ organizator }}</b></text>
-      <text 
-        v-if="pokurOrganizovan && organizator == role"
-        @click="organizator = ''; pokurOrganizovan = false; ready = false"
-      >
-        Слить покур?
-      </text>
-      <div class="leave" @click="ochkun = true">СЛИТЬСЯ</div>
-    </div>
     <div class="hub">
       <div class="isReady">
         <!-- <WarriorSuki @ready="(i) => isReady = i" :name="whois" :role="role" /> -->
@@ -58,10 +32,17 @@
           </div>
         </div>
         <div class="chat">
-          <Chat :whois="whois" />
+          <Chat :whois="whois" :uId="whoisId" />
         </div>
-        <div class="menu">
-          организовать покур, слиться
+        <div class="bottom-menu">
+          <Menu 
+            :menuPokur = pokurOrganizovan
+            :menuRole = role
+            :menuOrganizator = organizator
+            @menuPokurOrganizovan = "(i) => pokurOrganizovan = i"
+            @menuReady = "(i) => ready = i"
+            @emitOrganizator = "(i) => organizator = i"
+          />
         </div>
       </div>
     </div>
@@ -72,16 +53,19 @@
 import { Icon } from '@iconify/vue';
 import WarriorSuki from '../components/WarriorSuki.vue';
 import Chat from '../components/ChatPokur.vue';
+import Menu from '@/components/BottomMenu.vue'
 export default{
   components:{
+    Icon,
     WarriorSuki,
     Chat,
-    Icon,
+    Menu,
   },
   data(){
     return{
       whois: '',
       role: '',
+      whoisId: '',
       storagePicture: '',
       organizator: '',
       pokurOrganizovan: false,
@@ -129,14 +113,7 @@ export default{
         },
       ],
       whoiswho:[],
-      ochkun: false,
     }
-  },
-  methods:{
-    leave(){
-      localStorage.clear();
-      this.$router.push({name: 'auth'});
-    },
   },
   mounted(){
     this.whois = localStorage.getItem('whois');
@@ -152,6 +129,7 @@ export default{
         }
       } else {
         this.storagePicture = this.characters[i].picture;
+        this.whoisId = this.characters[i].id;
       }
     }
   }
@@ -178,49 +156,6 @@ export default{
   padding-top: 1vw;
   padding-bottom: 1vw;
 }
-/*LEAVE*/
-.leave{
-  border: 1px solid black;
-  border-radius: .4rem;
-  padding: .2vw;
-}
-.leave:hover{
-  color: darkred;
-  border: 1px solid darkred;
-  cursor: pointer;
-}
-.leave-popup{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  border: 2px solid black;
-  padding: 1vw;
-  border-radius: 1.2rem;
-  background-color: white;
-  width: 20vw;
-  text-align: center;
-  font-size: 1vw;
-}
-.vibor{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 1vw;
-}
-.vibor div{
-  width: 40%;
-  border: 1px solid black;
-  padding: 1%;
-  border-radius: .7rem;
-  cursor: pointer;
-}
-.vibor div:hover{
-  border-color: gray;
-  color: gray;
-}
 
 .create-pokur:hover{
   color: gray;
@@ -231,6 +166,7 @@ export default{
 /*HUB*/
 .hub{
   width: 100%;
+  margin-top: 1vw;
 }
 .isReady{
   width: 100%;
@@ -252,7 +188,7 @@ export default{
   margin-top: 1vw;
 }
 .users{
-  width: 10%;
+  width: 20%;
 }
 .user{
   width: 100%;
@@ -262,10 +198,9 @@ export default{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding-right: .3vw;
 }
 .user-name{
-  width: 75%;
+  width: 70%;
   text-align: left;
   font-size: .8vw;
   display: flex;
@@ -280,20 +215,20 @@ export default{
   object-fit: cover;
 }
 .user-invite{
-  width: 10%;
+  width: 15%;
   display: flex;
   align-items: center;
   cursor: pointer;
-  font-size: 1vw;
+  font-size: 1.5vw;
 }
 .user-invite:hover{
   color: gray;
 }
 .chat{
-  width: 70%;
+  width: 60%;
 }
-.menu{
+.bottom-menu{
   border: 1px solid black;
-  width: 10%;
+  width: 20%;
 }
 </style>
