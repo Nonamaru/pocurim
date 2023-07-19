@@ -46,6 +46,7 @@
 </div>
 </template>
 <script>
+import { socket } from '@/socket'
 export default{
     props:['menuPokur', 'menuRole', 'menuOrganizator'],
     data(){
@@ -55,8 +56,13 @@ export default{
     },
     methods:{
         leave(){
-            localStorage.clear();
-            this.$router.push({name: 'auth'});
+          socket.emit("logout" , {userId: `${localStorage.getItem('id')}`, isLogin: false})
+          socket.on("logout", (data) => {
+            if(data.isLogin == false){
+              localStorage.clear();
+              this.$router.push({name: 'auth'});
+            }
+          })
         }
     }
 }

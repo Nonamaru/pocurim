@@ -9,6 +9,7 @@
   </div>
   <div class="chatik-napisat">
     <div class="name">{{ whois }}</div>
+    <Icon icon="mdi:rat" />
     <input type="text" v-model="pisat" @keydown.enter="Sending()" />
     <div class="send-icon"><Icon @click="Sending()" icon="bxs:send" /></div>
   </div>
@@ -25,37 +26,32 @@ export default{
     data(){
         return{
             pisat: '',
-            message: '',
+            messages: [],
             // uID: uId,
-            messages: []
         }
     },
     methods:{
-        async Sending(){
-            if (this.pisat != ''){
-                // this.message = this.pisat;
-                // this.messages.push(this.message);
-                await socket.on("chat", function(data) {
-                  // console.log(data);
-                  console.log(data.text);
-                  
-                });
-                socket.emit("chat" , {userId : `a38f9dd3-263f-4f64-9314-b6e171fe5b75`, text: `${this.pisat}`})
-                await socket.on("chat", (data) => {
-                  this.uID = data.userId;
-                  this.messages.push(data.text);
-                });
-                this.pisat = '';
-            }
+        Sending(){
+          if (this.pisat != ''){
+              // this.messages.push(this.pisat);
+              socket.emit("chat" , {userId : `a38f9dd3-263f-4f64-9314-b6e171fe5b75`, text: `${this.pisat}`})
+              // this.messages.push(this.pisat);
+              this.pisat = '';
+          }
         }
     },
-    // async mounted(){
-    //   await socket.on("chat", function(data) {
-    //     // console.log(data);
-    //     console.log(data.text);
-    //     this.messages.push(data.text);
-    //   });
-    // }
+    mounted(){
+      socket.on("chatlist", function(data) {
+        for (let i=0; i<data.length; i++){
+          // this.messages.push(data[i]);
+          console.log(data);
+        }
+      });
+      socket.on("chat", function(data) {
+        console.log(data);
+        // this.messages.push(data.text);
+      });
+    }
 }
 </script>
 <style scoped>

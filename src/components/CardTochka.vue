@@ -1,6 +1,6 @@
 <template>
 <div class="character">
-    <img :src="require(`../assets/${pic}.jpg`)">
+    <img :src="pic">
     <div class="text" v-html="desc"></div>
 </div>
 </template>

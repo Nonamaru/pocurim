@@ -3,29 +3,29 @@
   <div class="container">
     <div class="hub">
       <div class="isReady">
-        <!-- <WarriorSuki @ready="(i) => isReady = i" :name="whois" :role="role" /> -->
         <WarriorSuki 
-          :name="whois" :role="role" pic="felix" :isReady="ready"
+          :name="whois" :role="role" :pic="link+whoisId+'.jpg'" :isReady="ready"
           :isYou="true"
           :pokur="pokurOrganizovan" 
           @ready="(i) => ready = i"
         />
         <WarriorSuki 
           v-for="char in whoiswho" :key="char" 
-          :name="char.name" :role="char.title" :pic="char.picture" :isReady="char.ready"
+          :name="char.name" :role="char.title" :pic="link+char.id+'.jpg'" :isReady="char.ready"
           :isYou="false" 
           :pokur="pokurOrganizovan"
         />
       </div>
       <div class="bottom">
         <div class="users">
-          <div v-for="warrior in whoiswho" :key="warrior" class="user">
+          <div v-for="warrior in socketswhoiswho" :key="warrior" class="user">
             <div class="user-pic">
-              <img :src="require(`@/assets/${warrior.picture}.jpg`)" />
+              <img :src="link + warrior.id + '.jpg'" />
             </div>
             <div class="user-name">
               {{ warrior.name }}
             </div>
+            <text v-if="warrior.isLogin">TUT</text>
             <div class="user-invite">
               <Icon icon="mdi:invite" />
             </div>
@@ -46,6 +46,7 @@
         </div>
       </div>
     </div>
+    <pre>{{ socketswhoiswho }}</pre>
   </div>
 </div>
 </template>
@@ -53,7 +54,8 @@
 import { Icon } from '@iconify/vue';
 import WarriorSuki from '../components/WarriorSuki.vue';
 import Chat from '../components/ChatPokur.vue';
-import Menu from '@/components/BottomMenu.vue'
+import Menu from '@/components/BottomMenu.vue';
+import { socket } from '@/socket';
 export default{
   components:{
     Icon,
@@ -68,6 +70,7 @@ export default{
       whoisId: '',
       storagePicture: '',
       organizator: '',
+      link: 'http://5.42.73.140/',
       pokurOrganizovan: false,
       ready: false,
       characters:[
@@ -75,7 +78,6 @@ export default{
           id: 'a38f9dd3-263f-4f64-9314-b6e171fe5b75',
           name: 'Felix',
           title: 'Задумчивый шаман',
-          picture: 'felix',
           ready: false,
           organizoval: false,
         },
@@ -83,7 +85,6 @@ export default{
           id: 'f786b04d-5388-413c-83c9-dcf8c88b885e',
           name: 'Anton',
           title: 'Танчащий палладин',
-          picture: 'antoxa',
           ready: false,
           organizoval: false,
         },
@@ -91,7 +92,6 @@ export default{
           id: '07dd2448-4e50-4d77-acb2-29a0ab9aa2d4',
           name: 'Danil',
           title: 'Длинный убийца',
-          picture: 'danil',
           ready: false,
           organizoval: false,
         },
@@ -99,7 +99,6 @@ export default{
           id: '4dfd4089-0d29-43ee-acda-7cee22a59bf8',
           name: 'Ruslan',
           title: 'Таинственный маг',
-          picture: 'ruslan',
           ready: false,
           organizoval: false,
         },
@@ -107,18 +106,30 @@ export default{
           id: 'a14ae894-32f0-4be5-9d54-d58333e7f3fc',
           name: 'Sanya',
           title: 'Агро воин',
-          picture: 'sanya',
           ready: false,
           organizoval: false,
         },
       ],
       whoiswho:[],
+      socketswhoiswho: [],
     }
   },
   mounted(){
     this.whois = localStorage.getItem('whois');
     this.role = localStorage.getItem('role');
-    // this.storagePicture = localStorage.getItem('picture');
+    this.whoisId = localStorage.getItem('id');
+    // socket.emit("chatlist")
+    
+    socket.emit("list");
+    socket.on("list", (data) => {
+      console.log(data);
+      for (let i=0; i<data.length; i++){
+        if (data[i].name != this.role){
+          this.socketswhoiswho.push(data[i]);
+        }
+      }
+    });
+
     for(let i = 0; i < this.characters.length; i++){
       if (this.characters[i].name != this.whois){
         this.whoiswho.push(this.characters[i]);
@@ -128,8 +139,7 @@ export default{
           this.pokurOrganizovan = true;
         }
       } else {
-        this.storagePicture = this.characters[i].picture;
-        this.whoisId = this.characters[i].id;
+        this.storagePicture = this.characters[i].id;
       }
     }
   }

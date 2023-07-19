@@ -1,7 +1,8 @@
 <template>
   <div class="warrior">
     <div class="char">
-      <img v-bind:class="{youWarrior: isYou && !pokur, youNotReady: pokur && !isReady, youReady: pokur && isReady}" :src="require(`@/assets/${pic}.jpg`)">
+      <img v-bind:class="{youWarrior: isYou && !pokur, youNotReady: pokur && !isReady, youReady: pokur && isReady}" :src="pic"
+      >
       <div class="char-desc">
         <!-- <text>{{ name }}</text> -->
         <text v-bind:class="{roleNotReady: pokur && !isready, roleReady: pokur && isReady}">{{ role }}</text>
