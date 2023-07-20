@@ -1,16 +1,16 @@
 <template>
   <div class="warrior">
     <div class="char">
-      <img v-bind:class="{youWarrior: isYou && !pokur, youNotReady: pokur && !isReady, youReady: pokur && isReady}" :src="pic"
+      <img v-bind:class="{youWarrior: loggined && !pokur, youNotReady: pokur && !isReady, youReady: pokur && isReady}" :src="pic"
       >
       <div class="char-desc">
         <!-- <text>{{ name }}</text> -->
         <text v-bind:class="{roleNotReady: pokur && !isready, roleReady: pokur && isReady}">{{ role }}</text>
       </div>
-      <div class="ready-button" v-if="isYou && !isReady && pokur" @click="$emit('ready', true)" :disabled="!pokur">
+      <div class="ready-button" v-if="loggined && !isReady && pokur && role == idrole" @click="readybutton(true)" :disabled="!pokur">
         <text id="ready">READY?</text>
       </div>
-      <div class="ready-button" v-if="isYou && isReady" @click="$emit('ready', false)">
+      <div class="ready-button" v-if="loggined && isReady && pokur && role == idrole" @click="readybutton(false)">
         <text id="zassal">ZASSAL?</text>
       </div>
     </div>
@@ -20,11 +20,20 @@
   </div>
 </template>
 <script>
-export default{
-  props: ['name', 'role', 'isYou', 'pokur', 'pic', 'isReady'],
+import { socket } from '@/socket';
+export default {
+  props: ['role', 'loggined', 'pokur', 'pic', 'isReady'],
   data(){
     return{
-      // isReady: false,
+      idrole: localStorage.getItem('role'),
+    }
+  },
+  methods:{
+    readybutton(r){
+      socket.emit('ready', {userId: `${localStorage.getItem('id')}`, isReady: r})
+      socket.on('ready', () => {
+        socket.emit('list');
+      })
     }
   }
 }

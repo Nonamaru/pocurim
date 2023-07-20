@@ -1,19 +1,4 @@
 <template>
-    <!-- <div class="header">
-      <text v-if="!pokurOrganizovan">
-        Покур никто не организовал, 
-        <text class="create-pokur" @click="pokurOrganizovan = !pokurOrganizovan; organizator = role; ready = true" >
-          <b>организовать покур?</b>
-        </text>
-      </text>
-      <text v-if="pokurOrganizovan">Организатор покура: <b>{{ organizator }}</b></text>
-      <text 
-        v-if="pokurOrganizovan && organizator == role"
-        @click="organizator = ''; pokurOrganizovan = false; ready = false"
-      >
-        Слить покур?
-      </text>
-    </div> -->
 <div class="menu">
     <div class="alert">
         <text v-if="!menuPokur">Никто не организовал покур</text>
@@ -23,14 +8,14 @@
     <div 
         class="start-smoke hover"
         v-if="!menuPokur"
-        @click="$emit('menuPokurOrganizovan', true); $emit('emitOrganizator', menuRole); $emit('menuReady', true)"
+        @click="makePokur()"
     >
         <text>Организовать покур</text>
     </div>
     <div 
         class="start-smoke hover"
         v-if="menuPokur && menuOrganizator == menuRole"
-        @click="$emit('emitOrganizator', ''); $emit('menuPokurOrganizovan', false); $emit('menuReady', false)"
+        @click="slitPokur()"
     >
         Слить покур?
     </div>
@@ -55,21 +40,36 @@ export default{
         }
     },
     methods:{
-        leave(){
-          socket.emit("logout" , {userId: `${localStorage.getItem('id')}`, isLogin: false})
-          socket.on("logout", (data) => {
-            if(data.isLogin == false){
-              localStorage.clear();
-              this.$router.push({name: 'auth'});
-            }
-          })
-        }
+      leave(){
+        socket.emit("logout" , {userId: `${localStorage.getItem('id')}`, isLogin: false})
+        socket.on("logout", (data) => {
+          socket.emit('make', {userId: `${localStorage.getItem('id')}`, make: false});
+          socket.emit('ready', {userId: `${localStorage.getItem('id')}`, isReady: false})
+          socket.emit("list");
+          if(data.isLogin == false){
+            localStorage.clear();
+            this.$router.push({name: 'auth'});
+          }
+        })
+      },
+      makePokur(){
+        socket.emit('make', {userId: `${localStorage.getItem('id')}`, make: true});
+        socket.on('make', () => {
+          socket.emit('list');
+        })
+      },
+      slitPokur(){
+        socket.emit('make', {userId: `${localStorage.getItem('id')}`, make: false});
+        socket.on('make', () => {
+          socket.emit('list');
+          this.$emit('slil', false);
+        })
+      },
     }
 }
 </script>
 <style scoped>
 .menu{
-    border: 1px solid black;
     text-align: center;
 }
 .hover:hover{

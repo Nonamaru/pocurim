@@ -19,7 +19,7 @@
 import { Icon } from '@iconify/vue';
 import { socket } from '@/socket'
 export default{
-    props:['whois', 'uId'],
+    props:['whois'],
     components:{
         Icon,
     },

@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/AuthView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '../views/AuthView.vue';
 
 const zareganLi = function (to, from, next) {
   if (localStorage.getItem('id') == null) {

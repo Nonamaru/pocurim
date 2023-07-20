@@ -15,5 +15,6 @@
 body{
   font-family: 'Roboto', sans-serif;
   user-select: none;
+  background-color: rgb(104, 103, 103);
 }
 </style>

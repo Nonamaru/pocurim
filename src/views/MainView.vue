@@ -4,15 +4,9 @@
     <div class="hub">
       <div class="isReady">
         <WarriorSuki 
-          :name="whois" :role="role" :pic="link+whoisId+'.jpg'" :isReady="ready"
-          :isYou="true"
-          :pokur="pokurOrganizovan" 
-          @ready="(i) => ready = i"
-        />
-        <WarriorSuki 
-          v-for="char in whoiswho" :key="char" 
-          :name="char.name" :role="char.title" :pic="link+char.id+'.jpg'" :isReady="char.ready"
-          :isYou="false" 
+          v-for="char in socketswhoiswho" :key="char" 
+          :role="char.name" :pic="link+char.id+'.jpg'" :isReady="char.isReady"
+          :loggined="char.isLogin" 
           :pokur="pokurOrganizovan"
         />
       </div>
@@ -22,26 +16,23 @@
             <div class="user-pic">
               <img :src="link + warrior.id + '.jpg'" />
             </div>
-            <div class="user-name">
+            <div class="user-name" :class="{userLoggined: warrior.isLogin}">
               {{ warrior.name }}
             </div>
-            <text v-if="warrior.isLogin">TUT</text>
             <div class="user-invite">
               <Icon icon="mdi:invite" />
             </div>
           </div>
         </div>
         <div class="chat">
-          <Chat :whois="whois" :uId="whoisId" />
+          <Chat :whois="whois" />
         </div>
         <div class="bottom-menu">
-          <Menu 
+          <BottomMenu 
             :menuPokur = pokurOrganizovan
             :menuRole = role
             :menuOrganizator = organizator
-            @menuPokurOrganizovan = "(i) => pokurOrganizovan = i"
-            @menuReady = "(i) => ready = i"
-            @emitOrganizator = "(i) => organizator = i"
+            @slil = "(i) => pokurOrganizovan = (i)"
           />
         </div>
       </div>
@@ -54,20 +45,19 @@
 import { Icon } from '@iconify/vue';
 import WarriorSuki from '../components/WarriorSuki.vue';
 import Chat from '../components/ChatPokur.vue';
-import Menu from '@/components/BottomMenu.vue';
+import BottomMenu from '@/components/BottomMenu.vue';
 import { socket } from '@/socket';
 export default{
   components:{
     Icon,
     WarriorSuki,
     Chat,
-    Menu,
+    BottomMenu,
   },
   data(){
     return{
       whois: '',
       role: '',
-      whoisId: '',
       storagePicture: '',
       organizator: '',
       link: 'http://5.42.73.140/',
@@ -110,38 +100,34 @@ export default{
           organizoval: false,
         },
       ],
-      whoiswho:[],
       socketswhoiswho: [],
     }
   },
   mounted(){
     this.whois = localStorage.getItem('whois');
     this.role = localStorage.getItem('role');
-    this.whoisId = localStorage.getItem('id');
-    // socket.emit("chatlist")
     
-    socket.emit("list");
     socket.on("list", (data) => {
-      console.log(data);
-      for (let i=0; i<data.length; i++){
-        if (data[i].name != this.role){
+      if (this.socketswhoiswho.length == 0){
+        for (let i=0; i<data.length; i++){
           this.socketswhoiswho.push(data[i]);
+          if(data[i].make){
+            this.organizator = data[i].name;
+            this.pokurOrganizovan = true;
+          }
+        }
+      } else {
+        for (let i=0; i<this.socketswhoiswho.length; i++){
+          this.socketswhoiswho[i].isReady = data[i].isReady;
+          this.socketswhoiswho[i].isLogin = data[i].isLogin;
+          this.socketswhoiswho[i].make = data[i].make;
+          if(data[i].make){
+            this.organizator = data[i].name;
+            this.pokurOrganizovan = true;
+          }
         }
       }
     });
-
-    for(let i = 0; i < this.characters.length; i++){
-      if (this.characters[i].name != this.whois){
-        this.whoiswho.push(this.characters[i]);
-        if(this.characters[i].organizoval == true){
-          this.organizator = this.characters[i].title;
-          this.characters[i].ready = true;
-          this.pokurOrganizovan = true;
-        }
-      } else {
-        this.storagePicture = this.characters[i].id;
-      }
-    }
   }
 }
 </script>
@@ -198,7 +184,6 @@ export default{
 }
 .users{
   width: 20%;
-  border: 1px solid black;
 }
 .user{
   width: 100%;
@@ -208,6 +193,7 @@ export default{
   flex-direction: row;
   justify-content: space-between;
 }
+.userLoggined{color: rgba(119, 160, 216, 1);}
 .user-name{
   width: 70%;
   text-align: left;
@@ -215,9 +201,7 @@ export default{
   display: flex;
   align-items: center;
 }
-.user-pic{
-  width: 10%;
-}
+.user-pic{width: 10%;}
 .user-pic img{
   width: 100%;
   height: 100%;
@@ -233,12 +217,6 @@ export default{
 .user-invite:hover{
   color: gray;
 }
-.chat{
-  width: 55%;
-  border: 1px solid black;
-}
-.bottom-menu{
-  border: 1px solid black;
-  width: 20%;
-}
+.chat{width: 55%;}
+.bottom-menu{width: 20%;}
 </style>
