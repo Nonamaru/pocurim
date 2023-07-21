@@ -1,4 +1,5 @@
 <template>
+<div class="back"></div>
 <div class="web">
   <div class="container">
     <div class="hub">
@@ -37,7 +38,37 @@
         </div>
       </div>
     </div>
-    <pre>{{ socketswhoiswho }}</pre>
+    <div class="vseGotovy-shadow" v-if="vseReady">
+      <div class="vseGotovy">
+        <text
+          style="
+            text-align: center;
+            font-size: 2vw;
+            font-weight: bold;
+          "
+        >
+          Войны, пора курить!
+        </text>
+        <text>
+          Да здравствуют войны покура! И незассавший организатор 
+        </text>
+        <text>
+          <u>{{role}}</u>
+        </text>
+        <text>
+          с достойной командой:
+        </text>
+        <text
+          v-for="man in socketswhoiswho" :key="man">
+          <text v-if="man.name != role">&#8226;&nbsp;<u>{{man.name}}</u></text>
+        </text>
+        <button :disabled="organizator != role" @click="endOfPokur()">В путь!</button>
+        <text style="font-size: .8vw;">
+          <b>*Боги прощают прошлых крыс и дают им новый шанс!</b>
+        </text>
+      </div>
+    </div>
+    <!-- <pre>{{ socketswhoiswho }}</pre> -->
   </div>
 </div>
 </template>
@@ -58,11 +89,11 @@ export default{
     return{
       whois: '',
       role: '',
-      storagePicture: '',
       organizator: '',
       link: 'http://5.42.73.140/',
       pokurOrganizovan: false,
       ready: false,
+      vseReady: false,
       characters:[
         {
           id: 'a38f9dd3-263f-4f64-9314-b6e171fe5b75',
@@ -103,6 +134,18 @@ export default{
       socketswhoiswho: [],
     }
   },
+  methods:{
+    endOfPokur(){
+      socket.emit("endOfPokur");
+      socket.on("endOfPokur", (data) => {
+        if (data.status == 'ok') {
+          this.vseReady = false;
+          this.pokurOrganizovan = false;
+          socket.emit("list");
+        }
+      });
+    }
+  },
   mounted(){
     this.whois = localStorage.getItem('whois');
     this.role = localStorage.getItem('role');
@@ -128,12 +171,29 @@ export default{
         }
       }
     });
+
+    socket.on("smoke", (data) => {
+      if (data.command == 'goToSmoke'){
+        this.vseReady = true;
+      }
+    })
   }
 }
 </script>
 <style scoped>
+.back{
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: rgba(128, 128, 128, 0.418);
+}
 .web{
   width: 100vw;
+  position: relative;
+  z-index: 2;
 }
 .container{
   width: 90vw;
@@ -219,4 +279,34 @@ export default{
 }
 .chat{width: 55%;}
 .bottom-menu{width: 20%;}
+
+/*ПОКУР ГОТОВ*/
+.vseGotovy-shadow{
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 11;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(1px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.vseGotovy{
+  border: 4px solid black;
+  border-radius: 1.2rem;
+  width: 20%;
+  display: flex;
+  font-size: 1.2rem;
+  flex-direction: column;
+  color: white;
+  background-color: rgba(128, 128, 128, 0.938);
+  padding: 1rem;
+  font-size: 1.2vw;
+}
+.vseGotovy button{
+  padding: .5vw;
+  width: 100%;
+}
 </style>
