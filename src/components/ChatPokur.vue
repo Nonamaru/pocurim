@@ -43,7 +43,7 @@ export default{
     async mounted(){
       await socket.on("chatlist", (data) => {
         for (let i=0; i<data.length; i++){
-          this.messages = data.reverse();
+          this.messages = data.slice().reverse();
         }
       });
       socket.on("chat", () => {
