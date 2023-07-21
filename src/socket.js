@@ -22,6 +22,7 @@ socket.on("disconnect", () => {
 });
 
 socket.emit("list");
+socket.emit("chatlist");
 // FELIX socket.emit('logout', {userId: 'a38f9dd3-263f-4f64-9314-b6e171fe5b75', isLogin: false})
 // ANTOXA socket.emit('logout', {userId: 'f786b04d-5388-413c-83c9-dcf8c88b885e', isLogin: false})
 // DANIL socket.emit('logout', {userId: '07dd2448-4e50-4d77-acb2-29a0ab9aa2d4', isLogin: false})

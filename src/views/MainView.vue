@@ -26,7 +26,7 @@
           </div>
         </div>
         <div class="chat">
-          <Chat :whois="whois" />
+          <Chat :whois="whois" :name="names" />
         </div>
         <div class="bottom-menu">
           <BottomMenu 
@@ -132,6 +132,7 @@ export default{
         },
       ],
       socketswhoiswho: [],
+      names: {},
     }
   },
   methods:{
@@ -149,7 +150,7 @@ export default{
   mounted(){
     this.whois = localStorage.getItem('whois');
     this.role = localStorage.getItem('role');
-    
+
     socket.on("list", (data) => {
       if (this.socketswhoiswho.length == 0){
         for (let i=0; i<data.length; i++){

@@ -2,9 +2,11 @@
 <div class="chatik">
   <div class="chatik-results">
     <text v-if="messages == ''">Никто ниче не написал еще</text>
+    <!-- <pre>{{messages}}</pre> -->
     <div class="chatik-message" v-for="mes in messages" :key="mes">
-        <text v-if="messages != ''" style="margin-right: .2vw;"><b>{{ whois }}: </b></text>
-        <text v-if="messages != ''">{{ mes }}</text>
+
+        <text v-if="messages != ''" style="margin-right: .2vw;"><b>{{ mes.userName }}: </b></text>
+        <text v-if="messages != ''">{{ mes.text }}</text>
     </div>
   </div>
   <div class="chatik-napisat">
@@ -19,7 +21,7 @@
 import { Icon } from '@iconify/vue';
 import { socket } from '@/socket'
 export default{
-    props:['whois'],
+    props:['whois', 'name'],
     components:{
         Icon,
     },
@@ -33,23 +35,19 @@ export default{
     methods:{
         Sending(){
           if (this.pisat != ''){
-              // this.messages.push(this.pisat);
-              socket.emit("chat" , {userId : `a38f9dd3-263f-4f64-9314-b6e171fe5b75`, text: `${this.pisat}`})
-              // this.messages.push(this.pisat);
+              socket.emit("chat" , {userId : `a38f9dd3-263f-4f64-9314-b6e171fe5b75`, userName: `${localStorage.getItem('whois')}`, text: `${this.pisat}`})
               this.pisat = '';
           }
         }
     },
-    mounted(){
-      socket.on("chatlist", function(data) {
+    async mounted(){
+      await socket.on("chatlist", (data) => {
         for (let i=0; i<data.length; i++){
-          // this.messages.push(data[i]);
-          console.log(data);
+          this.messages = data.reverse();
         }
       });
-      socket.on("chat", function(data) {
-        console.log(data);
-        // this.messages.push(data.text);
+      socket.on("chat", () => {
+        socket.emit("chatlist");
       });
     }
 }
