@@ -3,10 +3,10 @@
   <div class="chatik-results">
     <text v-if="messages == ''">Никто ниче не написал еще</text>
     <!-- <pre>{{messages}}</pre> -->
-    <div class="chatik-message" v-for="mes in messages" :key="mes">
-
-        <text v-if="messages != ''" style="margin-right: .2vw;"><b>{{ mes.userName }}: </b></text>
+    <div id="scrollChat" class="chatik-message" v-for="mes in messages" :key="mes">
+        <text v-if="messages != ''" style="margin-right: .2vw;"><b>{{ mes.userName }} <Icon icon="mdi:rat" />: </b></text>
         <text v-if="messages != ''">{{ mes.text }}</text>
+        <text v-if="messages != ''">{{ mes.createdAt }}</text>
     </div>
   </div>
   <div class="chatik-napisat">
@@ -41,10 +41,18 @@ export default{
         }
     },
     async mounted(){
-      await socket.on("chatlist", (data) => {
+      socket.emit("chatlist");
+      socket.on("chatlist", (data) => {
         for (let i=0; i<data.length; i++){
-          this.messages = data.slice().reverse();
+          data[i].createdAt = data[i].createdAt.replace(/T/gi, ' ')
+          data[i].createdAt = data[i].createdAt.replace(/Z/gi, '')
+          data[i].createdAt = data[i].createdAt.replace(/\.[0-9]*/gi, '')
+          let servNum = data[i].createdAt.match(/\s\d\d*/gi)
+          let trueNum = Number(servNum)+5;
+          data[i].createdAt = data[i].createdAt.replace(/\s\d\d*/gi, ` ${trueNum}`);
         }
+        console.log(data);
+        this.messages = data.slice().reverse();
       });
       socket.on("chat", () => {
         socket.emit("chatlist");
@@ -81,6 +89,7 @@ export default{
   margin-bottom: .1vw;
   width: 100%;
   align-items: center;
+  justify-content: space-between;
 }
 .chatik-napisat{
   width: 98%;

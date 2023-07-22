@@ -150,6 +150,8 @@ export default{
   mounted(){
     this.whois = localStorage.getItem('whois');
     this.role = localStorage.getItem('role');
+    socket.emit("chatlist");
+    socket.emit("list");
 
     socket.on("list", (data) => {
       if (this.socketswhoiswho.length == 0){
@@ -185,11 +187,12 @@ export default{
 .back{
   width: 100vw;
   height: 100vh;
-  position: absolute;
+  position: fixed;
   z-index: 1;
   top: 0;
   left: 0;
   background-color: rgba(128, 128, 128, 0.418);
+  background-attachment: fixed;
 }
 .web{
   width: 100vw;

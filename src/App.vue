@@ -15,8 +15,11 @@
 body{
   font-family: 'Roboto', sans-serif;
   user-select: none;
-  background-image: url('./assets/background.png');
+}
+html{
+  background-image: url('./assets/hub.jpg');
   background-repeat: no-repeat;
   background-size: 100vw 100vh;
+  background-attachment: fixed;
 }
 </style>
