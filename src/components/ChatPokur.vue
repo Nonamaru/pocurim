@@ -1,9 +1,9 @@
 <template>
 <div class="chatik">
-  <div class="chatik-results">
+  <div class="chatik-results" id="scrollChat">
     <text v-if="messages == ''">Никто ниче не написал еще</text>
     <!-- <pre>{{messages}}</pre> -->
-    <div id="scrollChat" class="chatik-message" v-for="mes in messages" :key="mes">
+    <div class="chatik-message" v-for="mes in messages" :key="mes">
         <text v-if="messages != ''" style="margin-right: .2vw;"><b>{{ mes.userName }} <Icon icon="mdi:rat" />: </b></text>
         <text v-if="messages != ''">{{ mes.text }}</text>
         <text v-if="messages != ''">{{ mes.createdAt }}</text>
@@ -51,11 +51,12 @@ export default{
           let trueNum = Number(servNum)+5;
           data[i].createdAt = data[i].createdAt.replace(/\s\d\d*/gi, ` ${trueNum}`);
         }
-        console.log(data);
         this.messages = data.slice().reverse();
+        document.getElementById('scrollChat').scroll(0, document.getElementById('scrollChat').scrollHeight);
       });
       socket.on("chat", () => {
         socket.emit("chatlist");
+        document.getElementById('scrollChat').scroll(0, document.getElementById('scrollChat').scrollHeight);
       });
     }
 }
@@ -70,8 +71,9 @@ export default{
   height: 16.93vw;
 }
 .chatik-results{
-  border: 1px solid black;
-  border-radius: 0px 0px 6px 6px;
+  border: 4px solid rgba(128, 128, 128, 0.342);
+  border-radius: 3px 3px 6px 6px;
+  backdrop-filter: blur(3px);
   padding: .5% 1%;
   display: flex;
   flex-direction: column;
