@@ -84,6 +84,9 @@ export default{
   max-height: 16.93vw;
   overflow: scroll;
 }
+::-webkit-scrollbar {
+  display: none;
+}
 .chatik-message{
   font-size: 1vw;
   display: flex;

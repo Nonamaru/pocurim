@@ -174,7 +174,9 @@ export default{
   width: 15vw;
   margin-right: 1vw;
   scrollbar-width: none;
-  
+}
+::-webkit-scrollbar {
+  width: 0;
 }
 /* .left-warriors-list::-webkit-scrollbar {
     display: none;

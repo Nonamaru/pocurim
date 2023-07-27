@@ -176,6 +176,7 @@ export default{
     });
 
     socket.on("smoke", (data) => {
+      console.log(data);
       if (data.command == 'goToSmoke'){
         this.vseReady = true;
       }
